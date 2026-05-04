@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "skillfit_secret_key_123")
 
 # Gemini Configuration
