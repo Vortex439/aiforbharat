@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillFit AI | AI-Powered Vocational Assessment</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-shell">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo" onclick="navigateTo('landing')">SF</div>
+      
+      <nav class="nav-item active" id="nav-landing" onclick="navigateTo('landing')" title="Home">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        <span class="nav-label">Home</span>
+      </nav>
+
+      <nav class="nav-item" id="nav-candidate" onclick="navigateTo('candidate')" title="Assessment">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+        <span class="nav-label">Test</span>
+      </nav>
+
+      <nav class="nav-item" id="nav-scorecard" onclick="navigateTo('scorecard')" title="Scorecard">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+        <span class="nav-label">Stats</span>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-toggle" onclick="navigateTo('admin-login')" title="Admin Access">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEWS -->
+    <main class="main-content">
+
+      <!-- LANDING VIEW -->
+      <section class="view active" id="view-landing">
+        <div class="hero-section">
+          <span class="badge">Next-Gen Hiring for Skilled Trades</span>
+          <h1>Hire for what they <span>can do</span>,<br>not what they say.</h1>
+          <p class="hero-p">AI-driven vocational assessments with real-time integrity monitoring. Join thousands of workers getting certified today.</p>
+          
+          <div class="role-selection" id="role-grid">
+            <!-- Roles will be generated here -->
+          </div>
+
+          <div class="language-selection" id="lang-pills">
+            <button class="lang-pill selected" onclick="selectLanguage('Hindi')">Hindi</button>
+            <button class="lang-pill" onclick="selectLanguage('Kannada')">Kannada</button>
+            <button class="lang-pill" onclick="selectLanguage('English')">English</button>
+            <button class="lang-pill" onclick="selectLanguage('Marathi')">Marathi</button>
+          </div>
+
+          <button class="cta-btn" onclick="startAssessment()">Start Assessment &rarr;</button>
+        </div>
+      </section>
+
+      <!-- CANDIDATE ASSESSMENT VIEW -->
+      <section class="view" id="view-candidate">
+        <div class="assessment-container">
+          
+          <div class="prog-steps">
+            <div class="step-item active" id="step-0">
+              <div class="step-circle">1</div>
+              <span class="step-label">Scenario</span>
+            </div>
+            <div class="step-item" id="step-1">
+              <div class="step-circle">2</div>
+              <span class="step-label">Interview</span>
+            </div>
+            <div class="step-item" id="step-2">
+              <div class="step-circle">3</div>
+              <span class="step-label">Results</span>
+            </div>
+          </div>
+
+          <!-- PHASE 0: SCENARIO -->
+          <div id="phase-scenario" class="glass-card">
+            <div class="card-header">
+              <h2 class="card-title" id="scenario-title">Practical Challenge</h2>
+              <p class="card-subtitle">Explain your process in detail. AI will adapt questions based on your response.</p>
+            </div>
+            <div class="scenario-text" id="scenario-desc">Loading scenario...</div>
+            <textarea id="scenario-input" placeholder="Type your step-by-step approach here..."></textarea>
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+              <span style="color:var(--text-dim); font-size: 12px;">Camera and audio will be enabled in the next step.</span>
+              <button class="cta-btn" style="padding: 12px 32px;" onclick="goToPhase(1)">Next Step &rarr;</button>
+            </div>
+          </div>
+
+          <!-- PHASE 1: INTERVIEW (WITH CAMERA) -->
+          <div id="phase-interview" class="hidden">
+            <div class="interview-grid">
+              
+              <!-- Left: Video Feed -->
+              <div class="video-feed-container">
+                <video id="webcam" autoplay playsinline></video>
+                <div id="camera-placeholder" class="camera-placeholder">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                  <span>Requesting Camera Permission...</span>
+                </div>
+                <div class="camera-overlay">
+                  <div class="status-badge rec"><div class="dot"></div> LIVE ASSESSMENT</div>
+                  <div class="status-badge" style="background: rgba(139, 92, 246, 0.4);"><svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20" style="margin-right:4px;"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg> AI MONITORING ACTIVE</div>
+                </div>
+              </div>
+
+              <!-- Right: Monitoring -->
+              <div class="monitoring-panel">
+                <div class="monitor-card">
+                  <div class="monitor-title">Live Integrity</div>
+                  <div class="monitor-item"><span class="monitor-label">Gaze Path</span><span class="monitor-status status-ok" id="stat-gaze">Normal</span></div>
+                  <div class="monitor-item"><span class="monitor-label">Audio Clarity</span><span class="monitor-status status-ok" id="stat-audio">Stable</span></div>
+                  <div class="monitor-item"><span class="monitor-label">Liveness</span><span class="monitor-status status-ok" id="stat-live">Verified</span></div>
+                  <div class="monitor-item"><span class="monitor-label">Environment</span><span class="monitor-status status-ok" id="stat-env">Private</span></div>
+                </div>
+
+                <div class="fraud-counter">
+                  <div class="fraud-val" id="fraud-count">0</div>
+                  <div class="fraud-label">Risk Flags Detected</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="chat-container">
+              <div class="chat-messages" id="chat-msgs">
+                <!-- Messages populate here -->
+              </div>
+              <div id="typing-indicator" class="message ai hidden" style="margin-bottom: 12px; margin-left: 24px;">
+                <div class="message-bubble" style="padding: 8px 16px;">AI is thinking...</div>
+              </div>
+              <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Your answer..." onkeydown="if(event.key==='Enter') sendMessage()">
+                <button onclick="sendMessage()">Send</button>
+              </div>
+            </div>
+            
+            <div style="margin-top: 16px; text-align: right;">
+              <button class="cta-btn hidden" id="view-results-btn" onclick="goToPhase(2)">Finalize Results &rarr;</button>
+            </div>
+          </div>
+
+          <!-- PHASE 2: RESULTS -->
+          <div id="phase-results" class="hidden glass-card">
+            <div class="card-header">
+              <h2 class="card-title">Assessment Summary</h2>
+              <p class="card-subtitle">AI Analysis based on technical knowledge, confidence, and integrity.</p>
+            </div>
+
+            <div class="results-grid">
+              <div class="score-card">
+                <div class="score-val" style="color: var(--accent-primary);">84</div>
+                <div class="score-label">Skill Proficiency</div>
+              </div>
+              <div class="score-card">
+                <div class="score-val" style="color: var(--accent-purple);">72</div>
+                <div class="score-label">Confidence</div>
+              </div>
+              <div class="score-card">
+                <div class="score-val" style="color: var(--accent-secondary);">98</div>
+                <div class="score-label">Trust Index</div>
+              </div>
+            </div>
+
+            <div class="skill-analysis" id="skill-results-container">
+              <!-- Skill bars go here -->
+            </div>
+
+            <div class="scenario-text" style="background: rgba(79, 127, 255, 0.05); border-left-color: var(--accent-primary);">
+              <strong>Expert Review:</strong> Excellent grasp of wiring safety and fault diagnosis. High confidence in responses. Integrity markers were near perfect with minimal distractions. Recommend for Lead Technician role.
+            </div>
+
+            <button class="cta-btn" onclick="navigateTo('scorecard')">View Full Scorecard</button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ADMIN LOGIN VIEW -->
+      <section class="view" id="view-admin-login">
+        <div style="max-width: 400px; margin: 100px auto;">
+          <div class="glass-card" style="text-align: center;">
+            <div class="role-icon" style="margin: 0 auto 24px; width: 64px; height: 64px;">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+            <h2 class="card-title">Hiring Portal</h2>
+            <p class="card-subtitle" style="margin-bottom: 32px;">Authorized Personnel Only</p>
+            
+            <input type="text" id="admin-user" placeholder="Username" style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 10px; border: 1px solid var(--border-medium); background: var(--surface-2); color: white;">
+            <input type="password" id="admin-pass" placeholder="Password" style="width: 100%; padding: 12px; margin-bottom: 24px; border-radius: 10px; border: 1px solid var(--border-medium); background: var(--surface-2); color: white;">
+            
+            <button class="cta-btn" style="width: 100%;" onclick="tryAdminLogin()">Access Dashboard</button>
+            <p id="login-error" style="color: var(--accent-danger); font-size: 12px; margin-top: 12px;" class="hidden">Invalid credentials. Try admin / admin123</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN DASHBOARD VIEW -->
+      <section class="view" id="view-admin">
+        <div class="admin-header">
+          <div>
+            <h1 style="margin-bottom: 4px;">Recruiter <span>Insights</span></h1>
+            <p class="card-subtitle">Real-time candidate pipeline and integrity monitoring.</p>
+          </div>
+          <button class="lang-pill" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="admin-stats">
+          <div class="stat-card"><div class="stat-lbl">Active Tests</div><div class="stat-val" style="color: var(--accent-primary);">12</div></div>
+          <div class="stat-card"><div class="stat-lbl">Pass Rate</div><div class="stat-val" style="color: var(--accent-secondary);">68%</div></div>
+          <div class="stat-card"><div class="stat-lbl">Fraud Flagged</div><div class="stat-val" style="color: var(--accent-danger);">3</div></div>
+          <div class="stat-card"><div class="stat-lbl">Top Trade</div><div class="stat-val">Electrician</div></div>
+        </div>
+
+        <div class="data-table-container">
+          <table id="candidate-table">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Trade</th>
+                <th>Skill</th>
+                <th>Trust</th>
+                <th>Risk</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="candidate-rows">
+              <!-- Rows go here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SCORECARD VIEW -->
+      <section class="view" id="view-scorecard">
+        <div class="assessment-container">
+          <div class="glass-card">
+            <div class="admin-header" style="margin-bottom: 24px;">
+              <div>
+                <h2 class="card-title">Detailed Scorecard</h2>
+                <p class="card-subtitle">Assessed on May 4, 2026 • ID: #SF-8821</p>
+              </div>
+              <div class="badge" style="background: var(--accent-secondary); color: white;">VERIFIED PASS</div>
+            </div>
+
+            <div class="results-grid">
+              <div class="score-card">
+                <div class="score-val">82</div>
+                <div class="score-label">Technical</div>
+              </div>
+              <div class="score-card">
+                <div class="score-val">74</div>
+                <div class="score-label">Soft Skills</div>
+              </div>
+              <div class="score-card">
+                <div class="score-val">91</div>
+                <div class="score-label">Safety</div>
+              </div>
+            </div>
+
+            <div class="skill-analysis">
+              <h3 style="margin-bottom: 16px; font-size: 14px; text-transform: uppercase; color: var(--text-dim);">Detailed Breakdown</h3>
+              <div class="skill-row"><span class="skill-name">Wiring Accuracy</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width: 88%;"></div></div><span class="skill-tag status-ok">Strong</span></div>
+              <div class="skill-row"><span class="skill-name">Troubleshooting</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width: 85%;"></div></div><span class="skill-tag status-ok">Strong</span></div>
+              <div class="skill-row"><span class="skill-name">Safety Compliance</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width: 42%; background: var(--accent-warning);"></div></div><span class="skill-tag status-warn">Review</span></div>
+              <div class="skill-row"><span class="skill-name">Communication</span><div class="skill-bar-outer"><div class="skill-bar-inner" style="width: 76%;"></div></div><span class="skill-tag status-ok">Good</span></div>
+            </div>
+
+            <div class="monitor-card" style="margin-top: 32px;">
+              <div class="monitor-title">Integrity Report (L3 Monitoring)</div>
+              <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Candidate remained focused. No off-screen gaze detected. Single speaker audio confirmed. No AI assistant patterns identified in the typing rhythm.</p>
+              <div style="display: flex; gap: 12px;">
+                <span class="status-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-secondary);">✓ Face Verified</span>
+                <span class="status-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-secondary);">✓ Gaze Consistent</span>
+                <span class="status-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--accent-secondary);">✓ Liveness Passed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment | {{ role|capitalize }} - SkillFit AI{% endblock %}
+
+{% block content %}
+<div class="container assessment-container">
+    <div class="scenario-box">
+        <h2>Technical Challenge: {{ role|capitalize }}</h2>
+        <p>{{ scenario }}</p>
+    </div>
+
+    <div class="interview-area">
+        <!-- AI Chat Area -->
+        <div class="chat-box">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai">
+                    Hello! I'm your AI technical evaluator. Please describe your step-by-step approach to the scenario above.
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="Type your technical response..." autocomplete="off">
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+
+        <!-- Monitoring Sidebar -->
+        <div class="monitoring-sidebar">
+            <div class="monitoring-area">
+                <div class="video-feed">
+                    <video id="webcam" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
+                    <div id="video-placeholder" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #111; color: #555; font-size: 0.9rem;">
+                        Camera Requesting...
+                    </div>
+                </div>
+                <div class="monitoring-stats">
+                    <div class="stat-row">
+                        <span>Liveness Check</span>
+                        <span id="stat-liveness">Verified</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Gaze Monitoring</span>
+                        <span id="stat-gaze">Active</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Background Analysis</span>
+                        <span id="stat-bg">Clear</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Risk Score</span>
+                        <span id="stat-risk" style="color: #00D1FF;">0.02</span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem; text-align: center;">
+                <a href="/results" class="btn-primary" style="display: block; text-decoration: none; padding: 0.75rem;">Finish Assessment</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // State
+    let monitoring = {
+        voice: false,
+        visible: true,
+        risk: 0.02
+    };
+
+    // Camera Logic
+    async function startCamera() {
+        const video = document.getElementById('webcam');
+        const placeholder = document.getElementById('video-placeholder');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            video.srcObject = stream;
+            placeholder.style.display = 'none';
+            setupAudio(stream);
+        } catch (err) {
+            console.error("Error accessing peripherals:", err);
+            placeholder.textContent = "Camera/Mic Access Denied";
+            placeholder.style.color = "#EF4444";
+        }
+    }
+
+    // Voice Activity Detection
+    function setupAudio(stream) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        function checkAudio() {
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for(let i=0; i<bufferLength; i++) sum += dataArray[i];
+            const average = sum / bufferLength;
+            
+            monitoring.voice = average > 30; // Threshold for speaking
+            document.getElementById('stat-bg').textContent = monitoring.voice ? "Voice Detected" : "Ambient Clear";
+            document.getElementById('stat-bg').style.color = monitoring.voice ? "#3E63FF" : "#00D1FF";
+            
+            requestAnimationFrame(checkAudio);
+        }
+        checkAudio();
+    }
+
+    // Tab Security Timer
+    const warningOverlay = document.createElement('div');
+    warningOverlay.style = "position:fixed; inset:0; background:rgba(239,68,68,0.9); z-index:9999; display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:white; padding:2rem;";
+    warningOverlay.innerHTML = `
+        <h1 style="font-family:var(--font-heading); font-size:3rem; margin-bottom:1rem;">SECURITY ALERT</h1>
+        <p style="font-size:1.5rem; margin-bottom:2rem;">Unauthorized tab switch detected.<br>Interview will terminate in <span id="security-countdown">5</span> seconds.</p>
+        <p style="font-size:1rem; opacity:0.8;">Return to this tab immediately to resume.</p>
+    `;
+    document.body.appendChild(warningOverlay);
+
+    document.addEventListener("visibilitychange", () => {
+        monitoring.visible = document.visibilityState === 'visible';
+        
+        if (!monitoring.visible) {
+            warningOverlay.style.display = 'flex';
+            monitoring.secondsLeft = 5;
+            document.getElementById('security-countdown').textContent = monitoring.secondsLeft;
+            
+            monitoring.inactiveTimer = setInterval(() => {
+                monitoring.secondsLeft--;
+                document.getElementById('security-countdown').textContent = monitoring.secondsLeft;
+                
+                if (monitoring.secondsLeft <= 0) {
+                    clearInterval(monitoring.inactiveTimer);
+                    alert("Security Violation: Assessment terminated due to tab inactivity.");
+                    window.location.href = "/results?fraud=true";
+                }
+            }, 1000);
+        } else {
+            warningOverlay.style.display = 'none';
+            clearInterval(monitoring.inactiveTimer);
+        }
+    });
+
+    startCamera();
+
+    // Chat Logic
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    // Disable Copy/Paste/Cut & Right-Click
+    ['paste', 'copy', 'cut', 'contextmenu'].forEach(evt => {
+        chatInput.addEventListener(evt, (e) => {
+            e.preventDefault();
+            if (evt === 'paste') {
+                const originalPlaceholder = chatInput.placeholder;
+                chatInput.placeholder = "PASTE DISABLED - PLEASE TYPE YOUR ANSWER";
+                chatInput.style.borderColor = "#EF4444";
+                setTimeout(() => {
+                    chatInput.placeholder = originalPlaceholder;
+                    chatInput.style.borderColor = "var(--border-color)";
+                }, 2000);
+            }
+            return false;
+        });
+    });
+
+    async function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        addMessage('user', text);
+        chatInput.value = '';
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            const data = await response.json();
+            addMessage('ai', data.response);
+        } catch (err) {
+            console.error("Chat error:", err);
+            addMessage('ai', "Sorry, I encountered an error. Please try again.");
+        }
+    }
+
+    function addMessage(sender, text) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender}`;
+        msgDiv.textContent = text;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    // Mock Monitoring Fluctuations
+    setInterval(() => {
+        const baseRisk = monitoring.risk;
+        const jitter = (Math.random() * 0.02);
+        document.getElementById('stat-risk').textContent = (baseRisk + jitter).toFixed(2);
+    }, 3000);
+</script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Assessment Results | SkillFit AI{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 6rem 2rem; text-align: center;">
+    <div style="background: var(--bg-card); max-width: 700px; margin: 0 auto; padding: 4rem; border-radius: 32px; border: 1px solid var(--border-color);">
+        <div style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); color: #10B981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 2rem;">✓</div>
+        
+        <h1 style="font-family: var(--font-heading); margin-bottom: 1rem;">Assessment Complete</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 3rem;">{{ summary }}</p>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
+            <div>
+                <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.5rem;">Skill Score</p>
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem;">{{ score }}%</h3>
+            </div>
+            <div>
+                <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.5rem;">Integrity</p>
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem; color: #10B981;">{{ integrity }}</h3>
+            </div>
+            <div>
+                <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.5rem;">Rank</p>
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem;">{{ rank }}</h3>
+            </div>
+        </div>
+
+        <a href="/" class="btn-primary" style="text-decoration: none; display: inline-block; padding: 1rem 3rem;">Return Home</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Portal | SkillFit AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-login-box">
+        <h2 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Hiring Dashboard</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.9rem;">Sign in to access candidate technical reports.</p>
+
+        {% if error %}
+        <p style="color: #EF4444; margin-bottom: 1.5rem; font-size: 0.85rem;">{{ error }}</p>
+        {% endif %}
+
+        <form action="/admin-login" method="POST">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="admin" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-primary">Access Portal</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

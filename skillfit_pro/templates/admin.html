@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Hiring Dashboard | SkillFit AI{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 4rem 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem;">
+        <div>
+            <h1 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 0.5rem;">Pipeline <span>Insights</span></h1>
+            <p style="color: var(--text-secondary);">Real-time technical competency and integrity overview.</p>
+        </div>
+        <a href="/logout" class="btn-primary" style="text-decoration: none; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--border-color);">Logout</a>
+    </div>
+
+    <!-- Stats Overview -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
+        <div style="background: var(--bg-card); padding: 2rem; border-radius: 20px; border: 1px solid var(--border-color);">
+            <p style="color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Total Assessed</p>
+            <h2 style="font-family: var(--font-heading); font-size: 2rem;">2,481</h2>
+        </div>
+        <div style="background: var(--bg-card); padding: 2rem; border-radius: 20px; border: 1px solid var(--border-color);">
+            <p style="color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Verified Pass</p>
+            <h2 style="font-family: var(--font-heading); font-size: 2rem; color: #10B981;">1,103</h2>
+        </div>
+        <div style="background: var(--bg-card); padding: 2rem; border-radius: 20px; border: 1px solid var(--border-color);">
+            <p style="color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Risk Flagged</p>
+            <h2 style="font-family: var(--font-heading); font-size: 2rem; color: #EF4444;">42</h2>
+        </div>
+        <div style="background: var(--bg-card); padding: 2rem; border-radius: 20px; border: 1px solid var(--border-color);">
+            <p style="color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Avg Skill Score</p>
+            <h2 style="font-family: var(--font-heading); font-size: 2rem;">78%</h2>
+        </div>
+    </div>
+
+    <!-- Candidate Table -->
+    <div style="background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-color); overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: rgba(255,255,255,0.02);">
+                    <th style="padding: 1.5rem 2rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Candidate</th>
+                    <th style="padding: 1.5rem 2rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Trade</th>
+                    <th style="padding: 1.5rem 2rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Skill Score</th>
+                    <th style="padding: 1.5rem 2rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Integrity</th>
+                    <th style="padding: 1.5rem 2rem; color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-top: 1px solid var(--border-color);">
+                    <td style="padding: 1.5rem 2rem; font-weight: 600;">Rahul Sharma</td>
+                    <td style="padding: 1.5rem 2rem; color: var(--text-secondary);">Electrician</td>
+                    <td style="padding: 1.5rem 2rem;">84%</td>
+                    <td style="padding: 1.5rem 2rem; color: #10B981;">Clean</td>
+                    <td style="padding: 1.5rem 2rem;"><span style="background: rgba(16, 185, 129, 0.1); color: #10B981; padding: 0.4rem 1rem; border-radius: 30px; font-size: 0.8rem; font-weight: 700;">Verified Pass</span></td>
+                </tr>
+                <tr style="border-top: 1px solid var(--border-color);">
+                    <td style="padding: 1.5rem 2rem; font-weight: 600;">Priya Singh</td>
+                    <td style="padding: 1.5rem 2rem; color: var(--text-secondary);">Master Plumber</td>
+                    <td style="padding: 1.5rem 2rem;">91%</td>
+                    <td style="padding: 1.5rem 2rem; color: #10B981;">Clean</td>
+                    <td style="padding: 1.5rem 2rem;"><span style="background: rgba(16, 185, 129, 0.1); color: #10B981; padding: 0.4rem 1rem; border-radius: 30px; font-size: 0.8rem; font-weight: 700;">Verified Pass</span></td>
+                </tr>
+                <tr style="border-top: 1px solid var(--border-color);">
+                    <td style="padding: 1.5rem 2rem; font-weight: 600;">Vikram Malhotra</td>
+                    <td style="padding: 1.5rem 2rem; color: var(--text-secondary);">Structural Welder</td>
+                    <td style="padding: 1.5rem 2rem;">62%</td>
+                    <td style="padding: 1.5rem 2rem; color: #EF4444;">2 Flags</td>
+                    <td style="padding: 1.5rem 2rem;"><span style="background: rgba(239, 68, 68, 0.1); color: #EF4444; padding: 0.4rem 1rem; border-radius: 30px; font-size: 0.8rem; font-weight: 700;">Risk Detected</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

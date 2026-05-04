@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}SkillFit AI - Expert Vocational Assessments{% endblock %}
+
+{% block content %}
+<section class="hero container">
+    <h1>Hire for <span>Capability</span>.</h1>
+    <p>AI-driven technical assessments for skilled trades. Real-world scenarios, adaptive interviewing, and comprehensive integrity monitoring.</p>
+</section>
+
+<section class="container">
+    <div class="role-grid">
+        {% for role in roles %}
+        <a href="{{ url_for('assessment', role_id=role.id) }}" class="role-card">
+            <h3>{{ role.title }}</h3>
+            <p>{{ role.desc }}</p>
+            <span class="arrow">Start Assessment &rarr;</span>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
