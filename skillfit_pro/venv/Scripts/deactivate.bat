@@ -1,4 +1,4 @@
-@echo off
+git remote add origin https://github.com/Vortex439/aiforbharat.git@echo off
 
 if defined _OLD_VIRTUAL_PROMPT (
     set "PROMPT=%_OLD_VIRTUAL_PROMPT%"

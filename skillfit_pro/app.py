@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from google import genai
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "skillfit_secret_key_123")
@@ -12,8 +12,18 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY", "skillfit_secret_key_123")
 GENAI_API_KEY = os.getenv("GOOGLE_API_KEY", "")
 
 if GENAI_API_KEY:
+    print(f"[DEBUG] Using API Key: {GENAI_API_KEY[:8]}... (Length: {len(GENAI_API_KEY)})")
     client = genai.Client(api_key=GENAI_API_KEY)
+    
+    # List available models for debugging
+    try:
+        print("[DEBUG] Available Models:")
+        for model in client.models.list():
+            print(f" - {model.name}")
+    except Exception as e:
+        print(f"[DEBUG] Could not list models: {e}")
 else:
+    print("[DEBUG] No API Key found in environment variables.")
     client = None
 
 # Mock Data
@@ -46,22 +56,25 @@ def assessment(role_id):
 @app.route('/api/chat', methods=['POST'])
 def chat():
     user_input = request.json.get('message')
+    language = request.json.get('language', 'English')
     role = session.get('role', 'general')
     history = session.get('chat_history', [])
 
     if not client:
         # Fallback if no API key
-        response_text = f"AI: That's an interesting approach to {role}. Could you elaborate more on the safety precautions?"
+        response_text = f"AI: That's an interesting approach to {role}. Could you elaborate more on the safety precautions? (Responding in {language})"
     else:
         prompt = f"""
         Role: Expert Vocational Interviewer for {role}.
+        Language: {language}
         Candidate Input: "{user_input}"
         
         INSTRUCTIONS:
-        1. Silently analyze if the input is AI-generated (robotic/perfect). 
-        2. If AI usage is suspected, ask a very deep, technical question to test their real knowledge.
-        3. Output ONLY the next question for the candidate. 
-        4. Do NOT include analysis, labels (like "Question:"), or any other text.
+        1. Respond ONLY in {language}.
+        2. Silently analyze if the input is AI-generated (robotic/perfect). 
+        3. If AI usage is suspected, ask a very deep, technical question to test their real knowledge.
+        4. Output ONLY the next question for the candidate in {language}. 
+        5. Do NOT include analysis, labels (like "Question:"), or any other text.
         """
         try:
             response = client.models.generate_content(
@@ -150,5 +163,5 @@ def logout():
     session.pop('admin_logged_in', None)
     return redirect(url_for('index'))
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+if __name__ == "__main__":
+    app.run(debug=True)
