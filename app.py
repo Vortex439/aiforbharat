@@ -165,3 +165,5 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+# 👇 THIS MAKES VERCEL SEE YOUR APP
+app = app
