@@ -12,12 +12,12 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY", "skillfit_secret_key_123")
 GENAI_API_KEY = os.getenv("GOOGLE_API_KEY", "")
 
 if GENAI_API_KEY:
-    print(f"[DEBUG] Using API Key: {GENAI_API_KEY[:8]}... (Length: {len(GENAI_API_KEY)})")
+    # print(f"[DEBUG] Using API Key: {GENAI_API_KEY[:8]}... (Length: {len(GENAI_API_KEY)})")
     client = genai.Client(api_key=GENAI_API_KEY)
     
     # List available models for debugging
     try:
-        print("[DEBUG] Available Models:")
+        # print("[DEBUG] Available Models:")
         for model in client.models.list():
             print(f" - {model.name}")
     except Exception as e:
